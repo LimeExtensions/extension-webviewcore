@@ -231,20 +231,23 @@ void WebView_ClearCache()
 {
 	dispatch_async(dispatch_get_main_queue(), ^
 	{
-		[[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:[WKWebsiteDataStore allWebsiteDataTypes] modifiedSince:[NSDate dateWithTimeIntervalSince1970:0] completionHandler:nil];
+		[[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:[WKWebsiteDataStore allWebsiteDataTypes] modifiedSince:[NSDate dateWithTimeIntervalSince1970:0] completionHandler:^{}];
 	});
 }
 
 void WebView_ClearCookies()
 {
-	dispatch_async(dispatch_get_main_queue(), ^
+	if (@available(iOS 11.0, *))
 	{
-		WKHTTPCookieStore* store = WKWebsiteDataStore.defaultDataStore.httpCookieStore;
-
-		[store getAllCookies:^(NSArray<NSHTTPCookie *> *cookies)
+		dispatch_async(dispatch_get_main_queue(), ^
 		{
-			for (NSHTTPCookie *cookie in cookies)
-				[store deleteCookie:cookie completionHandler:nil];
-		}];
-	});
+			WKHTTPCookieStore* store = WKWebsiteDataStore.defaultDataStore.httpCookieStore;
+
+			[store getAllCookies:^(NSArray<NSHTTPCookie *> *cookies)
+			{
+				for (NSHTTPCookie *cookie in cookies)
+					[store deleteCookie:cookie completionHandler:nil];
+			}];
+		});
+	}
 }
