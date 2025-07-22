@@ -94,6 +94,26 @@ class WebView
 	}
 
 	/**
+	 * Checks if the WebView is currently opened.
+	 * @return `true` if the web view is open, false otherwise.
+	 */
+	public static function isOpened():Bool
+	{
+		#if ios
+		return isOpenedWebview();
+		#elseif android
+		final isOpenedJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'isOpened', '()Z');
+
+		if (isOpenedJNI != null)
+			return isOpenedJNI();
+
+		return false;
+		#else
+		return false;
+		#end
+	}
+
+	/**
 	 * Closes and destroys the WebView instance.
 	 */
 	public static function close():Void
@@ -147,7 +167,7 @@ class WebView
 	/**
 	 * Checks if the WebView can navigate back.
 	 * 
-	 * @return True if the WebView can go back, false otherwise.
+	 * @return `true` if the WebView can go back, false otherwise.
 	 */
 	public static function canGoBack():Bool
 	{
@@ -183,7 +203,7 @@ class WebView
 	/**
 	 * Checks if the WebView can navigate forward.
 	 * 
-	 * @return True if the WebView can go forward, false otherwise.
+	 * @return `true` if the WebView can go forward, false otherwise.
 	 */
 	public static function canGoForward():Bool
 	{
@@ -337,6 +357,10 @@ class WebView
 	@:native('WebView_OpenWithData')
 	@:noCompletion
 	extern static function openWithDataWebView(data:ConstCharStar, mimeType:ConstCharStar, encoding:ConstCharStar):Void;
+
+	@:native('WebView_IsOpened')
+	@:noCompletion
+	extern static function isOpenedWebview():Bool;
 
 	@:native('WebView_Close')
 	@:noCompletion

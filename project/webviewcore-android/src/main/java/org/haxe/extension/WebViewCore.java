@@ -154,6 +154,11 @@ public class WebViewCore extends Extension
 		}
 	}
 
+	public static boolean isOpened()
+	{
+		return webView != null;
+	}
+
 	public static void close()
 	{
 		if (webView != null)

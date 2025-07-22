@@ -112,6 +112,11 @@ void WebView_OpenWithData(const char* data, const char* mimeType, const char* en
 	}
 }
 
+bool WebView_IsOpened()
+{
+	return webView != nil;
+}
+
 void WebView_Close()
 {
 	if (webView)

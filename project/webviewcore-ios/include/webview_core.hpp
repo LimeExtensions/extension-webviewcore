@@ -31,6 +31,13 @@ void WebView_OpenWithURL(const char* url);
 void WebView_OpenWithData(const char* data, const char* mimeType, const char* encoding);
 
 /**
+ * Checks whether the WebView is currently opened.
+ * 
+ * @return true if the WebView is opened, false otherwise.
+ */
+bool WebView_IsOpened();
+
+/**
  * Closes and destroys the current WebView instance.
  */
 void WebView_Close(void);
