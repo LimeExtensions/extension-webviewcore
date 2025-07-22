@@ -13,7 +13,7 @@ import lime.app.Event;
  * This class provides a cross-platform interface for WebView functionality.
  */
 #if ios
-@:buildXml('<include name="${haxelib:extension-webviewcore}/project/webview-ios/Build.xml" />')
+@:buildXml('<include name="${haxelib:extension-webviewcore}/project/webviewcore-ios/Build.xml" />')
 @:headerInclude('webview_core.hpp')
 #end
 class WebView
@@ -432,7 +432,7 @@ class WebView
 }
 
 #if ios
-@:buildXml('<include name="${haxelib:extension-webviewcore}/project/webview-ios/Build.xml" />')
+@:buildXml('<include name="${haxelib:extension-webviewcore}/project/webviewcore-ios/Build.xml" />')
 @:include('webview_core.hpp')
 @:structAccess
 @:native('WebViewCallbacks')
