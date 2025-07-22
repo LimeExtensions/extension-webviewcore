@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+	<pragma once="true" />
+
+	<files id="haxe">
+		<compilerflag value="-I${haxelib:extension-webviewcore}/project/webviewcore-ios/include" />
+	</files>
+
+	<files id="__main__">
+		<compilerflag value="-I${haxelib:extension-webviewcore}/project/webviewcore-ios/include" />
+	</files>
+
+	<files id="webviewcore">
+		<compilerflag value="-I${haxelib:extension-webviewcore}/project/webviewcore-ios/include" />
+
+		<file name="${haxelib:extension-webviewcore}/project/webviewcore-ios/src/webview_core.mm" />
+	</files>
+
+	<target id="haxe">
+		<vflag name="-framework" value="WebKit" />
+
+		<files id="webviewcore" />
+	</target>
+</xml>

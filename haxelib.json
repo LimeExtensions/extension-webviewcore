@@ -1,0 +1,23 @@
+{
+	"name": "extension-webviewcore",
+	"url": "https://github.com/LimeExtensions/extension-webviewcore",
+	"license": "MIT",
+	"description": "A Haxe/Lime extension that implements WebView on Android and iOS Devices.",
+	"tags": [
+		"android",
+		"ios",
+		"java",
+		"objcpp",
+		"haxe",
+		"lime",
+		"webview"
+	],
+	"releasenote": "First release.",
+	"contributors": [
+		"MAJigsaw77"
+	],
+	"version": "1.0.0",
+	"dependencies": {
+		"lime": ""
+	}
+}
