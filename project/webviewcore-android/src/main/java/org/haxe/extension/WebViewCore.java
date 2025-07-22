@@ -2,8 +2,12 @@ package org.haxe.extension;
 
 import android.app.Activity;
 
+import android.graphics.Color;
+
+import android.os.Build;
 import android.os.Bundle;
 
+import android.view.View;
 import android.view.ViewGroup;
 
 import android.webkit.CookieManager;
@@ -29,7 +33,7 @@ public class WebViewCore extends Extension
 		haxeObject = object;
 	}
 
-	public static void openWithURL(final String url)
+	public static void openWithURL(final boolean transparent, final String url)
 	{
 		if (webView == null)
 		{
@@ -39,6 +43,16 @@ public class WebViewCore extends Extension
 				public void run()
 				{
 					webView = new WebView(mainActivity);
+
+					if (transparent)
+					{
+						webView.setBackgroundColor(Color.TRANSPARENT);
+
+						if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+						{
+							webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+						}
+					}
 
 					webView.getSettings().setJavaScriptEnabled(true);
 					webView.getSettings().setDomStorageEnabled(true);
@@ -74,15 +88,6 @@ public class WebViewCore extends Extension
 						}
 					});
 
-					webView.setWebChromeClient(new WebChromeClient()
-					{
-						@Override
-						public void onProgressChanged(WebView view, int newProgress)
-						{
-							if (haxeObject != null)
-								haxeObject.call("onProgressChanged", new Object[]{newProgress});
-						}
-					});
 
 					((RelativeLayout) mainView).addView(webView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -92,7 +97,7 @@ public class WebViewCore extends Extension
 		}
 	}
 
-	public static void openWithData(final String data, final String mimeType, final String encoding)
+	public static void openWithData(final boolean transparent, final String data, final String mimeType, final String encoding)
 	{
 		if (webView == null)
 		{
@@ -102,6 +107,18 @@ public class WebViewCore extends Extension
 				public void run()
 				{
 					webView = new WebView(mainActivity);
+
+					if (transparent)
+					{
+						webView.setBackgroundColor(Color.TRANSPARENT);
+
+						if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P)
+						{
+							webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+						}
+					}
+
+					webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
 					webView.getSettings().setJavaScriptEnabled(true);
 					webView.getSettings().setDomStorageEnabled(true);
@@ -133,16 +150,6 @@ public class WebViewCore extends Extension
 								haxeObject.call("onUrlLoading", new Object[]{ request.getUrl().toString() });
 
 							return super.shouldOverrideUrlLoading(view, request);
-						}
-					});
-
-					webView.setWebChromeClient(new WebChromeClient()
-					{
-						@Override
-						public void onProgressChanged(WebView view, int newProgress)
-						{
-							if (haxeObject != null)
-								haxeObject.call("onProgressChanged", new Object[]{newProgress});
 						}
 					});
 

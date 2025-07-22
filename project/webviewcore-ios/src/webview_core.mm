@@ -63,7 +63,7 @@ void WebView_Init(const WebViewCallbacks* callbacks)
         delegate = [[WebViewDelegate alloc] init];
 }
 
-void WebView_OpenWithURL(const char* url)
+void WebView_OpenWithURL(bool transparent, const char* url)
 {
 	if (url)
 	{
@@ -76,9 +76,19 @@ void WebView_OpenWithURL(const char* url)
 				config.allowsInlineMediaPlayback = YES;
 
 				webView = [[WKWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds] configuration:config];
+
+				if (transparent)
+				{
+					webView.opaque = NO;
+					webView.backgroundColor = [UIColor clearColor];
+					webView.scrollView.backgroundColor = [UIColor clearColor];
+				}
+
 				webView.scrollView.bounces = NO;
+
 				webView.navigationDelegate = delegate;
 				webView.UIDelegate = delegate;
+
 				[[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:webView];
 			}
 
@@ -88,7 +98,7 @@ void WebView_OpenWithURL(const char* url)
 	}
 }
 
-void WebView_OpenWithData(const char* data, const char* mimeType, const char* encoding)
+void WebView_OpenWithData(bool transparent, const char* data, const char* mimeType, const char* encoding)
 {
 	if (data)
 	{
@@ -101,9 +111,19 @@ void WebView_OpenWithData(const char* data, const char* mimeType, const char* en
 				config.allowsInlineMediaPlayback = YES;
 
 				webView = [[WKWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds] configuration:config];
+
+				if (transparent)
+				{
+					webView.opaque = NO;
+					webView.backgroundColor = [UIColor clearColor];
+					webView.scrollView.backgroundColor = [UIColor clearColor];
+				}
+
 				webView.scrollView.bounces = NO;
+
 				webView.navigationDelegate = delegate;
 				webView.UIDelegate = delegate;
+
 				[[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:webView];
 			}
 

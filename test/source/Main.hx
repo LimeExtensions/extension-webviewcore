@@ -42,11 +42,6 @@ class Main extends lime.app.Application
 			}
 		});
 
-		WebView.onProgressChanged.add(function(progress:Int):Void
-		{
-			trace('Loading progress: $progress%');
-		});
-
 		WebView.init();
 	}
 

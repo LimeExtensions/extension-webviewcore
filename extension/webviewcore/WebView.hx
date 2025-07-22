@@ -27,9 +27,6 @@ class WebView
 	/** Event triggered when a URL is about to be loaded. */
 	public static final onUrlLoading:Event<String->Void> = new Event<String->Void>();
 
-	/** Event triggered when the loading progress changes (avaliable on Android). */
-	public static final onProgressChanged:Event<Int->Void> = new Event<Int->Void>();
-
 	#if android
 	/**
 	 * Cache for storing created static JNI method references.
@@ -60,36 +57,38 @@ class WebView
 	/**
 	 * Opens a WebView instance and loads a URL into the WebView.
 	 * 
+	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 * @param url The URL to load.
 	 */
-	public static function openWithURL(url:String):Void
+	public static function openWithURL(transparent:Bool = false, url:String):Void
 	{
 		#if ios
-		openWithURLWebView(url);
+		openWithURLWebView(transparent, url);
 		#elseif android
-		final openWithURLJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithURL', '(Ljava/lang/String;)V');
+		final openWithURLJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithURL', '(ZLjava/lang/String;)V');
 
 		if (openWithURLJNI != null)
-			openWithURLJNI(url);
+			openWithURLJNI(transparent, url);
 		#end
 	}
 
 	/**
 	 * Opens a WebView instance and loads data into the WebView.
 	 * 
+	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 * @param data The data to load.
 	 * @param mimeType The MIME type of the data.
 	 * @param encoding The encoding of the data.
 	 */
-	public static function openWithData(data:String, mimeType:String, encoding:String):Void
+	public static function openWithData(transparent:Bool = false, data:String, mimeType:String, encoding:String):Void
 	{
 		#if ios
-		openWithDataWebView(data, mimeType, encoding);
+		openWithDataWebView(transparent, data, mimeType, encoding);
 		#elseif android
-		final openWithDataJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithData', '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V');
+		final openWithDataJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithData', '(ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V');
 
 		if (openWithDataJNI != null)
-			openWithDataJNI(data, mimeType, encoding);
+			openWithDataJNI(transparent, data, mimeType, encoding);
 		#end
 	}
 
@@ -352,11 +351,11 @@ class WebView
 
 	@:native('WebView_OpenWithURL')
 	@:noCompletion
-	extern static function openWithURLWebView(url:ConstCharStar):Void;
+	extern static function openWithURLWebView(transparent:Bool, url:ConstCharStar):Void;
 
 	@:native('WebView_OpenWithData')
 	@:noCompletion
-	extern static function openWithDataWebView(data:ConstCharStar, mimeType:ConstCharStar, encoding:ConstCharStar):Void;
+	extern static function openWithDataWebView(transparent:Bool, data:ConstCharStar, mimeType:ConstCharStar, encoding:ConstCharStar):Void;
 
 	@:native('WebView_IsOpened')
 	@:noCompletion
@@ -479,16 +478,6 @@ private class WebViewCallbackObject #if (lime >= "8.0.0") implements lime.system
 	{
 		if (WebView.onUrlLoading != null)
 			WebView.onUrlLoading.dispatch(url);
-	}
-
-	@:keep
-	#if (lime >= "8.0.0")
-	@:runOnMainThread
-	#end
-	public function onProgressChanged(newProgress:Int):Void
-	{
-		if (WebView.onProgressChanged != null)
-			WebView.onProgressChanged.dispatch(newProgress);
 	}
 }
 #end
