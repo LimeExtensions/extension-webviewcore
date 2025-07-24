@@ -57,10 +57,10 @@ class WebView
 	/**
 	 * Opens a WebView instance and loads a URL into the WebView.
 	 * 
-	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 * @param url The URL to load.
+	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 */
-	public static function openWithURL(transparent:Bool = false, url:String):Void
+	public static function openWithURL(url:String, transparent:Bool = false):Void
 	{
 		#if ios
 		openWithURLWebView(transparent, url);
@@ -323,6 +323,13 @@ class WebView
 		#end
 	}
 
+	public static function addUIToolBar():Void
+	{
+		#if ios
+		addUIToolBarWebView();
+		#end
+	}
+
 	#if ios
 	@:noCompletion
 	private static function onPageStartedNative(url:ConstCharStar):Void
@@ -404,6 +411,10 @@ class WebView
 	@:native('WebView_ClearCookies')
 	@:noCompletion
 	extern static function clearCookiesWebView():Void;
+
+	@:native('WebView_AddUIToolBar')
+	@:noCompletion
+	extern static function addUIToolBarWebView():Void;
 	#elseif android
 	/**
 	 * Retrieves or creates a cached static method reference.

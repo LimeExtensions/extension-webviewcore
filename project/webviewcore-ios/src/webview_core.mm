@@ -7,6 +7,32 @@ static WKWebView* webView = nil;
 static WebViewCallbacks gWebViewCallbacksCopy = {};
 static WebViewCallbacks* gWebViewCallbacks = nullptr;
 
+@interface UIBarButtonHandler : NSObject
+@property (nonatomic, weak) WKWebView *webView;
+@property (nonatomic, weak) UIViewController *viewController;
+@end
+
+@implementation UIBarButtonHandler
+
+- (void)goBack {
+    if ([self.webView canGoBack]) {
+        [self.webView goBack];
+    } else if (self.viewController) {
+        [self.viewController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (void)closeWebView {
+    if (self.webView)
+	{
+		[self.webView removeFromSuperview];
+		self.webView.navigationDelegate = nil;
+		self.webView.UIDelegate = nil;
+		self.webView = nil;
+	}
+}
+@end
+
 @interface WebViewDelegate : NSObject <WKNavigationDelegate, WKUIDelegate>
 @end
 
@@ -250,4 +276,45 @@ void WebView_ClearCookies()
 			}];
 		});
 	}
+}
+
+void WebView_AddUIToolBar() {
+	UIWindow *activeWindow = UIApplication.sharedApplication.windows.firstObject;
+	UIViewController *viewController = activeWindow.rootViewController;
+	UIView *containerView = viewController.view;
+    CGFloat screenWidth = containerView.bounds.size.width;
+    
+    UIBarButtonHandler *handler = [UIBarButtonHandler new];
+    handler.webView = webView;
+    handler.viewController = viewController;
+
+  	// UIBarButtonItem *backButton = [[UIBarButtonItem alloc]
+	// 	initWithTitle:@"Go Back"
+	// 	style:UIBarButtonItemStylePlain
+    //     target:handler
+    // 	action:@selector(goBack)];
+	
+	// UIBarButtonItem *space = [[UIBarButtonItem alloc] 
+	// 	initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+    //     target:nil
+    //     action:nil];
+	
+	UIBarButtonItem *closeButton = [[UIBarButtonItem alloc]
+		initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+        target:handler
+        action:@selector(closeWebView)];
+
+    UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 50)];
+    toolBar.translucent = YES;
+    toolBar.translatesAutoresizingMaskIntoConstraints = NO;
+    toolBar.items = @[/*backButton, space,*/ closeButton];
+
+    [webView addSubview:toolBar];
+
+    // Auto Layout constraints
+    [NSLayoutConstraint activateConstraints:@[
+        [toolBar.bottomAnchor constraintEqualToAnchor:webView.bottomAnchor],
+        [toolBar.leadingAnchor constraintEqualToAnchor:webView.leadingAnchor],
+        [toolBar.trailingAnchor constraintEqualToAnchor:webView.trailingAnchor]
+    ]];
 }

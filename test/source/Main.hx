@@ -18,6 +18,7 @@ class Main extends lime.app.Application
 		WebView.onPageFinished.add(function(url:String):Void
 		{
 			trace('Page finished loading: $url');
+			WebView.addUIToolBar();
 		});
 
 		WebView.onUrlLoading.add(function(url:String):Void

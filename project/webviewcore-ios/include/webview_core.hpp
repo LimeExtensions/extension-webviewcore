@@ -107,3 +107,5 @@ void WebView_ClearCache(void);
  * This affects the global cookie storage and is not tied to a specific session.
  */
 void WebView_ClearCookies(void);
+
+void WebView_AddUIToolBar(void);
