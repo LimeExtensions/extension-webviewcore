@@ -118,7 +118,9 @@ void WebView_OpenWithURL(const char* url, bool transparent, bool addCloseButton)
 				closeButton.adjustsImageWhenHighlighted = NO;
 				closeButton.translatesAutoresizingMaskIntoConstraints = NO;
 
-				[[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:closeButton];
+				UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+
+				[keyWindow.rootViewController.view addSubview:closeButton];
 
 				CGFloat padding = 8 * [UIScreen mainScreen].scale;
 
@@ -177,7 +179,9 @@ void WebView_OpenWithData(const char* data, const char* mimeType, const char* en
 				closeButton.adjustsImageWhenHighlighted = NO;
 				closeButton.translatesAutoresizingMaskIntoConstraints = NO;
 
-				[[UIApplication sharedApplication].keyWindow.rootViewController.view addSubview:closeButton];
+				UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+
+				[keyWindow.rootViewController.view addSubview:closeButton];
 
 				CGFloat padding = 8 * [UIScreen mainScreen].scale;
 
