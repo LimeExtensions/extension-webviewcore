@@ -48,7 +48,7 @@ class WebView
 		callbacks.onPageStarted = cpp.Callable.fromStaticFunction(onPageStartedNative);
 		callbacks.onPageFinished = cpp.Callable.fromStaticFunction(onPageFinishedNative);
 		callbacks.onUrlLoading = cpp.Callable.fromStaticFunction(onUrlLoadingNative);
-		callbacks.onCloseButtonClicked = cpp.Callable.fromStaticFunction(onCloseButtonClicked);
+		callbacks.onCloseButtonClicked = cpp.Callable.fromStaticFunction(onCloseButtonClickedNative);
 		initWebView(cpp.RawConstPointer.addressOf(callbacks));
 		#elseif android
 		final initJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'init', '(Lorg/haxe/lime/HaxeObject;)V');
@@ -352,7 +352,7 @@ class WebView
 	}
 
 	@:noCompletion
-	private static function onCloseButtonClicked():Void
+	private static function onCloseButtonClickedNative():Void
 	{
 		onCloseButtonClicked.dispatch();
 	}
