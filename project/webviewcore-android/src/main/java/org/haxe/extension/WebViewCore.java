@@ -23,17 +23,34 @@ import org.haxe.extension.Extension;
 
 import org.haxe.lime.HaxeObject;
 
+import android.graphics.drawable.GradientDrawable;
+
+import android.graphics.Typeface;
+
+import android.os.Bundle;
+
+import android.view.Gravity;
+
+import android.widget.FrameLayout;
+
+import android.widget.TextView;
+
+import android.widget.ImageView;
+
+import android.util.TypedValue;
+
 public class WebViewCore extends Extension
 {
 	private static HaxeObject haxeObject = null;
 	private static WebView webView = null;
+	private static ImageView closeButton = null;
 
 	public static void init(HaxeObject object)
 	{
 		haxeObject = object;
 	}
 
-	public static void openWithURL(final boolean transparent, final String url)
+	public static void openWithURL(final String url, final boolean transparent, final boolean addCloseButton)
 	{
 		if (webView == null)
 		{
@@ -88,16 +105,38 @@ public class WebViewCore extends Extension
 						}
 					});
 
+					webView.loadUrl(url);
 
 					((RelativeLayout) mainView).addView(webView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-					webView.loadUrl(url);
+					if (addCloseButton)
+					{
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						params.addRule(RelativeLayout.ALIGN_PARENT_END);
+						params.topMargin = (int) (8 * mainActivity.getResources().getDisplayMetrics().density + 0.5f);
+						params.setMarginEnd(params.topMargin);
+
+						closeButton = new ImageView(mainActivity);
+						closeButton.setLayoutParams(params);
+						closeButton.setImageResource(mainActivity.getResources().getIdentifier("close", "drawable", mainActivity.getPackageName()));
+						closeButton.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View v)
+							{
+								if (haxeObject != null)
+									haxeObject.call("onCloseButtonClicked", new Object[]{  });
+							}
+						});
+						((RelativeLayout) mainView).addView(closeButton);
+					}
 				}
 			});
 		}
 	}
 
-	public static void openWithData(final boolean transparent, final String data, final String mimeType, final String encoding)
+	public static void openWithData(final String data, final String mimeType, final String encoding, final boolean transparent, final boolean addCloseButton)
 	{
 		if (webView == null)
 		{
@@ -153,9 +192,32 @@ public class WebViewCore extends Extension
 						}
 					});
 
+					webView.loadData(data, mimeType, encoding);
+
 					((RelativeLayout) mainView).addView(webView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-					webView.loadData(data, mimeType, encoding);
+					if (addCloseButton)
+					{
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						params.addRule(RelativeLayout.ALIGN_PARENT_END);
+						params.topMargin = (int) (8 * mainActivity.getResources().getDisplayMetrics().density + 0.5f);
+						params.setMarginEnd(params.topMargin);
+
+						closeButton = new ImageView(mainActivity);
+						closeButton.setLayoutParams(params);
+						closeButton.setImageResource(mainActivity.getResources().getIdentifier("close", "drawable", mainActivity.getPackageName()));
+						closeButton.setOnClickListener(new View.OnClickListener()
+						{
+							@Override
+							public void onClick(View v)
+							{
+								if (haxeObject != null)
+									haxeObject.call("onCloseButtonClicked", new Object[]{  });
+							}
+						});
+						((RelativeLayout) mainView).addView(closeButton);
+					}
 				}
 			});
 		}
@@ -174,6 +236,14 @@ public class WebViewCore extends Extension
 			{
 				public void run()
 				{
+					if (closeButton != null)
+					{
+						if (closeButton.getParent() != null)
+							((ViewGroup) closeButton.getParent()).removeView(closeButton);
+
+						closeButton = null;
+					}
+
 					if (webView.getParent() != null)
 						((ViewGroup) webView.getParent()).removeView(webView);
 
@@ -354,16 +424,5 @@ public class WebViewCore extends Extension
 	{
 		if (webView != null)
 			webView.saveState(outState);
-	}
-
-	public boolean onBackPressed()
-	{
-		if (webView != null && webView.canGoBack())
-		{
-			webView.goBack();
-			return false;
-		}
-
-		return true;
 	}
 }

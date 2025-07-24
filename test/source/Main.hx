@@ -23,23 +23,23 @@ class Main extends lime.app.Application
 		WebView.onUrlLoading.add(function(url:String):Void
 		{
 			trace('Loading URL: $url');
+		});
 
-			if (url.startsWith('http://exitme'))
-			{
-				trace('Clearing data.');
+		WebView.onCloseButtonClicked.add(function():Void
+		{
+			trace('Clearing data.');
 
-				WebView.clearCache(true);
-				WebView.clearHistory();
-				WebView.clearFormData();
+			WebView.clearCache(true);
+			WebView.clearHistory();
+			WebView.clearFormData();
 
-				trace('Closing webview from url loading.');
+			trace('Closing webview from url loading.');
 
-				WebView.close();
+			WebView.close();
 
-				trace('Clearing cookies.');
+			trace('Clearing cookies.');
 
-				WebView.clearCookies();
-			}
+			WebView.clearCookies();
 		});
 
 		WebView.init();
@@ -47,7 +47,7 @@ class Main extends lime.app.Application
 
 	public override function onWindowCreate():Void
 	{
-		WebView.openWithURL('https://google.com');
+		WebView.openWithURL('https://google.com', false, true);
 	}
 
 	public override function render(context:lime.graphics.RenderContext):Void

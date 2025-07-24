@@ -10,5 +10,10 @@
 		<config:android extension="org.haxe.extension.WebViewCore" />
 	</section>
 
-	<dependency name="WebKit.framework" if="ios" />
+	<section if="ios">
+		<assets path="assets" rename="webview" />
+
+		<dependency name="UIKit.framework" />
+		<dependency name="WebKit.framework" />
+	</section>
 </extension>

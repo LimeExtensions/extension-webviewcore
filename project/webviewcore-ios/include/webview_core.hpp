@@ -5,6 +5,7 @@ typedef struct WebViewCallbacks
 	void (*onPageFinished)(const char* url);
 	void (*onPageStarted)(const char* url);
 	void (*onUrlLoading)(const char* url);
+	void (*onCloseButtonClicked)();
 } WebViewCallbacks;
 
 /**
@@ -17,20 +18,22 @@ void WebView_Init(const WebViewCallbacks* callbacks);
 /**
  * Opens a new WebView and loads the specified URL.
  *
- * @param transparent Whether the WebView should be transparent.
  * @param url The URL to load. Must be a valid UTF-8 encoded string.
+ * @param transparent Whether the WebView should be transparent.
+ * @param addCloseButton Whether the WebView should have a close button.
  */
-void WebView_OpenWithURL(bool transparent, const char* url);
+void WebView_OpenWithURL(const char* url, bool transparent, bool addCloseButton);
 
 /**
  * Opens a new WebView and loads HTML or data content directly.
  *
- * @param transparent Whether the WebView should be transparent.
  * @param data The raw HTML or data string to display.
  * @param mimeType The MIME type of the content (e.g., "text/html").
  * @param encoding The character encoding (e.g., "UTF-8").
+ * @param transparent Whether the WebView should be transparent.
+ * @param addCloseButton Whether the WebView should have a close button.
  */
-void WebView_OpenWithData(bool transparent, const char* data, const char* mimeType, const char* encoding);
+void WebView_OpenWithData(const char* data, const char* mimeType, const char* encoding, bool transparent, bool addCloseButton);
 
 /**
  * Checks whether the WebView is currently opened.

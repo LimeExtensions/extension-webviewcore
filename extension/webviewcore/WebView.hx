@@ -27,6 +27,9 @@ class WebView
 	/** Event triggered when a URL is about to be loaded. */
 	public static final onUrlLoading:Event<String->Void> = new Event<String->Void>();
 
+	/** Event triggered when the WebView's close button is clicked. */
+	public static final onCloseButtonClicked:Event<Void->Void> = new Event<Void->Void>();
+
 	#if android
 	/**
 	 * Cache for storing created static JNI method references.
@@ -45,6 +48,7 @@ class WebView
 		callbacks.onPageStarted = cpp.Callable.fromStaticFunction(onPageStartedNative);
 		callbacks.onPageFinished = cpp.Callable.fromStaticFunction(onPageFinishedNative);
 		callbacks.onUrlLoading = cpp.Callable.fromStaticFunction(onUrlLoadingNative);
+		callbacks.onCloseButtonClicked = cpp.Callable.fromStaticFunction(onCloseButtonClicked);
 		initWebView(cpp.RawConstPointer.addressOf(callbacks));
 		#elseif android
 		final initJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'init', '(Lorg/haxe/lime/HaxeObject;)V');
@@ -57,38 +61,40 @@ class WebView
 	/**
 	 * Opens a WebView instance and loads a URL into the WebView.
 	 * 
-	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 * @param url The URL to load.
+	 * @param transparent Whether the WebView should be transparent (disabled by default).
+	 * @param addCloseButton Whether the WebView should have a close button (disabled by default).
 	 */
-	public static function openWithURL(transparent:Bool = false, url:String):Void
+	public static function openWithURL(url:String, transparent:Bool = false, addCloseButton:Bool = false):Void
 	{
 		#if ios
-		openWithURLWebView(transparent, url);
+		openWithURLWebView(url, transparent, addCloseButton);
 		#elseif android
-		final openWithURLJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithURL', '(ZLjava/lang/String;)V');
+		final openWithURLJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithURL', '(Ljava/lang/String;ZZ)V');
 
 		if (openWithURLJNI != null)
-			openWithURLJNI(transparent, url);
+			openWithURLJNI(url, transparent, addCloseButton);
 		#end
 	}
 
 	/**
 	 * Opens a WebView instance and loads data into the WebView.
 	 * 
-	 * @param transparent Whether the WebView should be transparent (disabled by default).
 	 * @param data The data to load.
 	 * @param mimeType The MIME type of the data.
 	 * @param encoding The encoding of the data.
+	 * @param transparent Whether the WebView should be transparent (disabled by default).
+	 * @param addCloseButton Whether the WebView should have a close button (disabled by default).
 	 */
-	public static function openWithData(transparent:Bool = false, data:String, mimeType:String, encoding:String):Void
+	public static function openWithData(transparent:Bool = false, data:String, mimeType:String, encoding:String, transparent:Bool = false, addCloseButton:Bool = false):Void
 	{
 		#if ios
-		openWithDataWebView(transparent, data, mimeType, encoding);
+		openWithDataWebView(data, mimeType, encoding, transparent, addCloseButton);
 		#elseif android
-		final openWithDataJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithData', '(ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V');
+		final openWithDataJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'openWithData', '(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZ)V');
 
 		if (openWithDataJNI != null)
-			openWithDataJNI(transparent, data, mimeType, encoding);
+			openWithDataJNI(data, mimeType, encoding, transparent, addCloseButton);
 		#end
 	}
 
@@ -345,17 +351,23 @@ class WebView
 			onUrlLoading.dispatch((url : String));
 	}
 
+	@:noCompletion
+	private static function onCloseButtonClicked():Void
+	{
+		onCloseButtonClicked.dispatch();
+	}
+
 	@:native('WebView_Init')
 	@:noCompletion
 	extern static function initWebView(callbacks:RawConstPointer<WebViewCallbacks>):Void;
 
 	@:native('WebView_OpenWithURL')
 	@:noCompletion
-	extern static function openWithURLWebView(transparent:Bool, url:ConstCharStar):Void;
+	extern static function openWithURLWebView(url:ConstCharStar, transparent:Bool, addCloseButton:Bool):Void;
 
 	@:native('WebView_OpenWithData')
 	@:noCompletion
-	extern static function openWithDataWebView(transparent:Bool, data:ConstCharStar, mimeType:ConstCharStar, encoding:ConstCharStar):Void;
+	extern static function openWithDataWebView(data:ConstCharStar, mimeType:ConstCharStar, encoding:ConstCharStar, transparent:Bool, addCloseButton:Bool):Void;
 
 	@:native('WebView_IsOpened')
 	@:noCompletion
@@ -443,6 +455,7 @@ extern class WebViewCallbacks
 	var onPageFinished:Callable<(url:ConstCharStar) -> Void>;
 	var onPageStarted:Callable<(url:ConstCharStar) -> Void>;
 	var onUrlLoading:Callable<(url:ConstCharStar) -> Void>;
+	var onCloseButtonClicked:Callable<()->Void>;
 }
 #elseif android
 @:noCompletion
@@ -478,6 +491,16 @@ private class WebViewCallbackObject #if (lime >= "8.0.0") implements lime.system
 	{
 		if (WebView.onUrlLoading != null)
 			WebView.onUrlLoading.dispatch(url);
+	}
+
+	@:keep
+	#if (lime >= "8.0.0")
+	@:runOnMainThread
+	#end
+	public function onCloseButtonClicked():Void
+	{
+		if (WebView.onCloseButtonClicked != null)
+			WebView.onCloseButtonClicked.dispatch();
 	}
 }
 #end
