@@ -209,7 +209,13 @@ public class WebViewCore extends Extension
 									haxeObject.call("onCloseButtonClicked", new Object[]{  });
 							}
 						});
-						((RelativeLayout) mainView).addView(closeButton);
+
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						params.addRule(RelativeLayout.ALIGN_PARENT_END);
+						params.topMargin = (int) (8 * mainActivity.getResources().getDisplayMetrics().density + 0.5f);
+						params.setMarginEnd(params.topMargin);
+						((RelativeLayout) mainView).addView(closeButton, params);
 					}
 				}
 			});
