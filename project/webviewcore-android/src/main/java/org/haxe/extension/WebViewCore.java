@@ -198,14 +198,7 @@ public class WebViewCore extends Extension
 
 					if (addCloseButton)
 					{
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-						params.addRule(RelativeLayout.ALIGN_PARENT_END);
-						params.topMargin = (int) (8 * mainActivity.getResources().getDisplayMetrics().density + 0.5f);
-						params.setMarginEnd(params.topMargin);
-
 						closeButton = new ImageView(mainActivity);
-						closeButton.setLayoutParams(params);
 						closeButton.setImageResource(mainActivity.getResources().getIdentifier("close", "drawable", mainActivity.getPackageName()));
 						closeButton.setOnClickListener(new View.OnClickListener()
 						{
