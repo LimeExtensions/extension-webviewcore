@@ -213,6 +213,12 @@ void WebView_Close()
 	{
 		dispatch_async(dispatch_get_main_queue(), ^
 		{
+			if (closeButton)
+			{
+				[closeButton removeFromSuperview];
+				closeButton = nil;
+			}
+
 			[webView removeFromSuperview];
 			webView.navigationDelegate = nil;
 			webView.UIDelegate = nil;
