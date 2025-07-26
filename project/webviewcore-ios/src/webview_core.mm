@@ -87,6 +87,8 @@ void WebView_OpenWithURL(const char* url, bool transparent, bool addCloseButton)
 
 			webView = [[WKWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds] configuration:config];
 
+			webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
 			if (transparent)
 			{
 				webView.opaque = NO;
@@ -148,6 +150,8 @@ void WebView_OpenWithData(const char* data, const char* mimeType, const char* en
 			config.allowsInlineMediaPlayback = YES;
 
 			webView = [[WKWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds] configuration:config];
+
+			webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
 			if (transparent)
 			{
