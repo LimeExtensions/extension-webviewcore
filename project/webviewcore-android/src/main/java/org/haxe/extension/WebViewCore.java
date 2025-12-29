@@ -52,12 +52,12 @@ public class WebViewCore extends Extension
 
 	public static void openWithURL(final String url, final boolean transparent, final boolean addCloseButton)
 	{
-		if (webView == null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				if (webView == null)
 				{
 					webView = new WebView(mainActivity);
 
@@ -129,21 +129,22 @@ public class WebViewCore extends Extension
 									haxeObject.call("onCloseButtonClicked", new Object[]{  });
 							}
 						});
+
 						((RelativeLayout) mainView).addView(closeButton);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void openWithData(final String data, final String mimeType, final String encoding, final boolean transparent, final boolean addCloseButton)
 	{
-		if (webView == null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
+				if (webView == null)
 				{
 					webView = new WebView(mainActivity);
 
@@ -215,11 +216,12 @@ public class WebViewCore extends Extension
 						params.addRule(RelativeLayout.ALIGN_PARENT_END);
 						params.topMargin = (int) (8 * mainActivity.getResources().getDisplayMetrics().density + 0.5f);
 						params.setMarginEnd(params.topMargin);
+
 						((RelativeLayout) mainView).addView(closeButton, params);
 					}
 				}
-			});
-		}
+			}
+		});
 	}
 
 	public static boolean isOpened()
@@ -229,20 +231,20 @@ public class WebViewCore extends Extension
 
 	public static void close()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			public void run()
 			{
-				public void run()
+				if (closeButton != null)
 				{
-					if (closeButton != null)
-					{
-						if (closeButton.getParent() != null)
-							((ViewGroup) closeButton.getParent()).removeView(closeButton);
+					if (closeButton.getParent() != null)
+						((ViewGroup) closeButton.getParent()).removeView(closeButton);
 
-						closeButton = null;
-					}
+					closeButton = null;
+				}
 
+				if (webView != null)
+				{
 					if (webView.getParent() != null)
 						((ViewGroup) webView.getParent()).removeView(webView);
 
@@ -250,38 +252,34 @@ public class WebViewCore extends Extension
 
 					webView = null;
 				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void loadData(final String data, final String mimeType, final String encoding)
 	{
-		if (webView != null) 
+		mainActivity.runOnUiThread(new Runnable() 
 		{
-			mainActivity.runOnUiThread(new Runnable() 
+			@Override
+			public void run() 
 			{
-				@Override
-				public void run() 
-				{
+				if (webView != null)
 					webView.loadData(data, mimeType, encoding);
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void loadURL(final String url)
 	{
-		if (webView != null) 
+		mainActivity.runOnUiThread(new Runnable() 
 		{
-			mainActivity.runOnUiThread(new Runnable() 
+			@Override
+			public void run() 
 			{
-				@Override
-				public void run() 
-				{
+				if (webView != null)
 					webView.loadUrl(url);
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static boolean canGoBack()
@@ -291,17 +289,15 @@ public class WebViewCore extends Extension
 
 	public static void goBack()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.goBack();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static boolean canGoForward()
@@ -311,92 +307,80 @@ public class WebViewCore extends Extension
 
 	public static void goForward()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.goForward();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void reload()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.reload();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void stopLoading()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.stopLoading();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void clearCache(final boolean includeDiskFiles)
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.clearCache(includeDiskFiles);
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void clearHistory()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.clearHistory();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void clearFormData()
 	{
-		if (webView != null)
+		mainActivity.runOnUiThread(new Runnable()
 		{
-			mainActivity.runOnUiThread(new Runnable()
+			@Override
+			public void run()
 			{
-				@Override
-				public void run()
-				{
+				if (webView != null)
 					webView.clearFormData();
-				}
-			});
-		}
+			}
+		});
 	}
 
 	public static void clearCookies()
