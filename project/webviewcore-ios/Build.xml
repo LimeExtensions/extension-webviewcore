@@ -17,8 +17,10 @@
 	</files>
 
 	<target id="haxe">
-		<vflag name="-framework" value="UIKit" />
-		<vflag name="-framework" value="WebKit" />
+		<section unless="static_link">
+			<vflag name="-framework" value="UIKit" />
+			<vflag name="-framework" value="WebKit" />
+		</section>
 
 		<files id="webviewcore" />
 	</target>
