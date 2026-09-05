@@ -45,10 +45,10 @@ class WebView
 	{
 		#if ios
 		final callbacks:WebViewCallbacks = new WebViewCallbacks();
-		callbacks.onPageStarted = cpp.Callable.fromStaticFunction(onPageStartedNative);
-		callbacks.onPageFinished = cpp.Callable.fromStaticFunction(onPageFinishedNative);
-		callbacks.onUrlLoading = cpp.Callable.fromStaticFunction(onUrlLoadingNative);
-		callbacks.onCloseButtonClicked = cpp.Callable.fromStaticFunction(onCloseButtonClickedNative);
+		callbacks.onPageStarted = cpp.Callable.fromStaticFunction(WebViewNativeCallbacks.onPageStartedNative);
+		callbacks.onPageFinished = cpp.Callable.fromStaticFunction(WebViewNativeCallbacks.onPageFinishedNative);
+		callbacks.onUrlLoading = cpp.Callable.fromStaticFunction(WebViewNativeCallbacks.onUrlLoadingNative);
+		callbacks.onCloseButtonClicked = cpp.Callable.fromStaticFunction(WebViewNativeCallbacks.onCloseButtonClickedNative);
 		initWebView(cpp.RawConstPointer.addressOf(callbacks));
 		#elseif android
 		final initJNI:Null<Dynamic> = createJNIStaticMethod('org/haxe/extension/WebViewCore', 'init', '(Lorg/haxe/lime/HaxeObject;)V');
@@ -330,33 +330,6 @@ class WebView
 	}
 
 	#if ios
-	@:noCompletion
-	private static function onPageStartedNative(url:ConstCharStar):Void
-	{
-		if (url != null)
-			onPageStarted.dispatch((url : String));
-	}
-
-	@:noCompletion
-	private static function onPageFinishedNative(url:ConstCharStar):Void
-	{
-		if (url != null)
-			onPageFinished.dispatch((url : String));
-	}
-
-	@:noCompletion
-	private static function onUrlLoadingNative(url:ConstCharStar):Void
-	{
-		if (url != null)
-			onUrlLoading.dispatch((url : String));
-	}
-
-	@:noCompletion
-	private static function onCloseButtonClickedNative():Void
-	{
-		onCloseButtonClicked.dispatch();
-	}
-
 	@:native('WebView_Init')
 	@:noCompletion
 	extern static function initWebView(callbacks:RawConstPointer<WebViewCallbacks>):Void;
@@ -456,6 +429,45 @@ extern class WebViewCallbacks
 	var onPageStarted:Callable<(url:ConstCharStar) -> Void>;
 	var onUrlLoading:Callable<(url:ConstCharStar) -> Void>;
 	var onCloseButtonClicked:Callable<()->Void>;
+}
+
+/**
+ * Holds the native `WKWebView` callbacks.
+ */
+@:access(extension.webviewcore.WebView)
+@:unreflective
+private class WebViewNativeCallbacks
+{
+	@:noCompletion
+	@:unreflective
+	public static function onPageStartedNative(url:ConstCharStar):Void
+	{
+		if (url != null)
+			WebView.onPageStarted.dispatch((url : String));
+	}
+
+	@:noCompletion
+	@:unreflective
+	public static function onPageFinishedNative(url:ConstCharStar):Void
+	{
+		if (url != null)
+			WebView.onPageFinished.dispatch((url : String));
+	}
+
+	@:noCompletion
+	@:unreflective
+	public static function onUrlLoadingNative(url:ConstCharStar):Void
+	{
+		if (url != null)
+			WebView.onUrlLoading.dispatch((url : String));
+	}
+
+	@:noCompletion
+	@:unreflective
+	public static function onCloseButtonClickedNative():Void
+	{
+		WebView.onCloseButtonClicked.dispatch();
+	}
 }
 #elseif android
 @:noCompletion
